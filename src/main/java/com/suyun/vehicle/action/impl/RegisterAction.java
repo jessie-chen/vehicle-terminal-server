@@ -8,9 +8,12 @@ import com.suyun.vehicle.protocol.body.TerminalRegister;
 import com.suyun.vehicle.protocol.body.TerminalRegisterResponse;
 import com.suyun.vehicle.protocol.utils.HexConverter;
 import com.suyun.vehicle.service.VehicleService;
+import com.suyun.vehicle.utils.MobileUtil;
 import com.suyun.vehicle.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * Register Action
@@ -26,6 +29,12 @@ public class RegisterAction extends BaseAction {
     @Autowired
     private TokenUtil tokenUtil;
 
+    public static int SUCCESS = 0;
+    public static int TERMINAL_ALREADY_SIGNED = 3;
+    public static int CAR_NOT_FOUND = 2;
+    public static int CAR_ALREADY_SIGNED = 1;
+    public static int TERMINAL_NOT_FOUND = 4;
+
     @Override
     public int actionCode() {
         return MessageCode.T_REQ_REGISTER;
@@ -33,23 +42,19 @@ public class RegisterAction extends BaseAction {
 
     @Override
     public Message handle(Message in) throws Exception {
-            String mobileNumber = in.header().mobile().toHexString();
-            String bodyMessage = HexConverter.bytesToHexString(in.body().getBytes());
-            TerminalRegister register = new TerminalRegister();
-            register.fromHexString(bodyMessage);
-            vehicleService.saveCarRegisterInfo(in.header().mobile().toHexString(),register);
-            boolean validResult = vehicleService.validRegister(mobileNumber);
-            String token; int result;
-            if (validResult) {
-                result = SUCCESS;
-                vehicleService.updateDataActiveStatus(mobileNumber,true);
-                token = tokenUtil.generateToken(mobileNumber);
-            } else {
-                result = FAILURE;
-                token = "";
-            }
-            int reqSeq = in.header().serialNum().intValue();
-            Body body = new TerminalRegisterResponse(reqSeq,result,token);
-                return response(in, body);
+        String mobileNumber = MobileUtil.transferMobile(in.header().mobile().toHexString());
+        TerminalRegister register = (TerminalRegister) in.body();
+        Map<String,Object> resultMap = vehicleService.register(mobileNumber,register);
+        int reqSeq = in.header().serialNum().intValue();
+        int result = (int) resultMap.get("result");
+        String token = (String) resultMap.get("token");
+        Body body = new TerminalRegisterResponse(reqSeq,result,token);
+        System.out.println();
+        if (token != "") {
+            System.out.println("token :>>" + token);
+            return response(in, body);
+        } else {
+            return commonResponse(in,result);
         }
+    }
 }

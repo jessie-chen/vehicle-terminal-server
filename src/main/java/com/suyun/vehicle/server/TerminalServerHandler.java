@@ -71,7 +71,6 @@ public class TerminalServerHandler extends SimpleChannelInboundHandler<Message> 
             LOGGER.error("No handler for 0x" + Integer.toHexString(code) + ". Please check with developer");
             return;
         }
-
         Message result = action.handle(msg);
         if (result != null) {
             ChannelFuture future = ctx.write(result);

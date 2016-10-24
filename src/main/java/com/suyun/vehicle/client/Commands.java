@@ -6,6 +6,7 @@ import com.suyun.vehicle.protocol.Message;
 import com.suyun.vehicle.protocol.MessageBuilder;
 import com.suyun.vehicle.protocol.ProtoException;
 import com.suyun.vehicle.protocol.body.ServerCommonResponse;
+import com.suyun.vehicle.protocol.body.TerminalAuthentication;
 import com.suyun.vehicle.protocol.impl.MessageImpl;
 
 /**
@@ -23,6 +24,7 @@ public class Commands {
                 hexString = "7E0100002C0134123456782C8C000000000000000000534C363638302D474200000000000000000000003136443232333400313644323233348F7E";
                 break;
             case "authentication":
+                //hexString = auth();
                 hexString = "7E010200030134123456782C8E313234A87E";
                 break;
             case "heartbeat":
@@ -49,21 +51,14 @@ public class Commands {
         return msg;
     }
 
-    private static Message register() {
-        MessageImpl msg = new MessageImpl();
-        try {
-            msg.fromHexString("7E0100002C0134123456782C8C000000000000000000534C363638302D474200000000000000000000003136443232333400313644323233348F7E", true);
-        } catch (ProtoException e) {
-            e.printStackTrace();
-        }
-        System.out.println(msg);
-        System.out.println(msg.toHexString());
-        return msg;
+    private static String auth() {
+        String code = "4D544D304D54497A4E4455324E7A673D2E72484E446C335A344C5459794730393944374C2F347775344F32383D";
+        Body auth = new TerminalAuthentication(code);
+        MessageImpl msg = (MessageImpl) MessageBuilder.create("13412345678", 5, auth);
+        String s = msg.toHexString(true);
+        System.out.println(s);
+        return s;
     }
 
-    private static Message serverCommonResponse() {
-        Body body = new ServerCommonResponse(0x7d,0x7e,1);
-        Message msg = MessageBuilder.create(body.msgId(), "18138438111", 10, body);
-        return msg;
-    }
+
 }
