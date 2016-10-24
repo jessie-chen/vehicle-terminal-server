@@ -1,5 +1,8 @@
 package com.suyun.vehicle.server;
 
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.HttpClientConfig;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -32,6 +35,9 @@ public class Configration {
     @Value("${jdbc.password}")
     private String jdbcPassword;
 
+    @Value("${elasticSearchURL}")
+    private String elasticSearchURL;
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -50,6 +56,16 @@ public class Configration {
 //        factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:**/*Mapper.xml"));
         factoryBean.setConfigLocation(new ClassPathResource("mybatis-config.xml"));
         return factoryBean.getObject();
+    }
+
+    @Bean
+    public JestClient jestClient(){
+        JestClientFactory factory = new JestClientFactory();
+        factory.setHttpClientConfig(new HttpClientConfig
+                .Builder(elasticSearchURL)
+                .multiThreaded(true)
+                .build());
+        return factory.getObject();
     }
 
 }

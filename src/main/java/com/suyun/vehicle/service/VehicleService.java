@@ -31,24 +31,25 @@ public class VehicleService {
     }
 
     public boolean saveCarRegisterInfo(String mobile, TerminalRegister register) {
-        BusInfo busInfo = new BusInfo();
-        System.out.println("131131131 >" + (register.getProvinceId().toHexString() + register.getCityId().toHexString()));
-        busInfo.setArea_code(register.getProvinceId().toHexString() + register.getCityId().toHexString());
-        busInfo.setManufacturer_id(Long.valueOf(register.getManufacturerId().toHexString()));
-        busInfo.setTerminal_model(register.getModel().toHexString());
-        busInfo.setTerminal_id(register.getTerminalId().toHexString());
-        String plateColor = register.getPlateColor().toHexString();
-        busInfo.setPlate_color(Integer.parseInt(plateColor));
-        busInfo.setId(IdGenerator.uuid());
-        busInfo.setCreate_by(register.getTerminalId().toHexString());
-        busInfo.setCreate_date(new Date());
-        if (plateColor.charAt(plateColor.length() - 1) == '0') {
-            busInfo.setPlate_no(register.getPlateIdentify());
-        } else {
-            busInfo.setVIN(register.getPlateIdentify());
-        }
-        busInfo.setMobile(mobile);
-        return busInfoMapper.insertSelective(busInfo) > 0;
+//        BusInfo busInfo = new BusInfo();
+//        System.out.println("131131131 >" + (register.getProvinceId().toHexString() + register.getCityId().toHexString()));
+//        busInfo.setArea_code(register.getProvinceId().toHexString() + register.getCityId().toHexString());
+//        busInfo.setManufacturer_id(Long.valueOf(register.getManufacturerId().toHexString()));
+//        busInfo.setTerminal_model(register.getModel().toHexString());
+//        busInfo.setTerminal_id(register.getTerminalId().toHexString());
+//        String plateColor = register.getPlateColor().toHexString();
+//        busInfo.setPlate_color(Integer.parseInt(plateColor));
+//        busInfo.setId(IdGenerator.uuid());
+//        busInfo.setCreate_by(register.getTerminalId().toHexString());
+//        busInfo.setCreate_date(new Date());
+//        if (plateColor.charAt(plateColor.length() - 1) == '0') {
+//            busInfo.setPlate_no(register.getPlateIdentify());
+//        } else {
+//            busInfo.setVIN(register.getPlateIdentify());
+//        }
+//        busInfo.setMobile(mobile);
+//        return busInfoMapper.insertSelective(busInfo) > 0;
+        return true;
     }
 
     public boolean updateDataActiveStatus(String mobile, boolean status) {
@@ -66,23 +67,25 @@ public class VehicleService {
     }
 
     public boolean saveLocationData(PositionBody locationData,String phoneNumber) {
-        BusData data = new BusData();
-        data.setAlert_flag(Integer.parseInt(locationData.getAlarmMark().toHexString()));
-        data.setId(IdGenerator.uuid());
-        data.setCreate_date(new Date());
-        data.setAltitude(Integer.parseInt(locationData.getAltitude().toHexString()));
-        data.setLatitude(Double.parseDouble(locationData.getLatitude().toHexString()));
-        //data.setDatetime(locationData.getTime());
-        if (null != getBusInfoByPhoneNo(phoneNumber)) {
-            data.setBus_id(getBusInfoByPhoneNo(phoneNumber).getId());
-        }
-        data.setSpeed(Integer.parseInt(locationData.getSpeed().toHexString()));
-        data.setDirection(Integer.parseInt(locationData.getDirection().toHexString()));
-        data.setLongitude(Double.parseDouble(locationData.getLongitude().toHexString()));
-        data.setStatus(Integer.parseInt(locationData.getStatus().toHexString()));
+//        BusData data = new BusData();
+//        data.setAlert_flag(Integer.parseInt(locationData.getAlarmMark().toHexString()));
+//        data.setId(IdGenerator.uuid());
+//        data.setCreate_date(new Date());
+//        data.setAltitude(Integer.parseInt(locationData.getAltitude().toHexString()));
+//        data.setLatitude(Double.parseDouble(locationData.getLatitude().toHexString()));
+//        //data.setDatetime(locationData.getTime());
+//        if (null != getBusInfoByPhoneNo(phoneNumber)) {
+//            data.setBus_id(getBusInfoByPhoneNo(phoneNumber).getId());
+//        }
+//        data.setSpeed(Integer.parseInt(locationData.getSpeed().toHexString()));
+//        data.setDirection(Integer.parseInt(locationData.getDirection().toHexString()));
+//        data.setLongitude(Double.parseDouble(locationData.getLongitude().toHexString()));
+//        data.setStatus(Integer.parseInt(locationData.getStatus().toHexString()));
         //unit
-        return busDataMapper.insertSelective(data) > 0;
+//        return busDataMapper.insertSelective(data) > 0;
+        return true;
     }
+
     @Autowired
     private CanRawDataMapper rawDataMapper;
     public boolean saveCanData(CanBusBody body,String mobile){
