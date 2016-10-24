@@ -20,7 +20,6 @@ public abstract class BaseAction implements Action {
     public final static int FAULT = 2;
     public final static int NOT_SUPPORT = 3;
     public final static int ALARM = 3;
-
     private static int seqNum = 0;
 
     protected Message commonResponse(Message in, int result) {
