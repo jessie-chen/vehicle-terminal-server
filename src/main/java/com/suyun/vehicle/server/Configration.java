@@ -1,5 +1,4 @@
 package com.suyun.vehicle.server;
-
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
@@ -16,6 +15,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 /**
+ * injection bean
  * Created by IT on 16/10/12.
  */
 @org.springframework.context.annotation.Configuration
