@@ -1,7 +1,11 @@
 package com.suyun.vehicle.server;
 
+
 import com.suyun.vehicle.common.queue.MessagePublisher;
 import com.suyun.vehicle.common.queue.RedisMessagePublisher;
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.HttpClientConfig;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -19,6 +23,7 @@ import javax.sql.DataSource;
 /**
  * Configuration
  *
+ * injection bean
  * Created by IT on 16/10/12.
  */
 @org.springframework.context.annotation.Configuration
@@ -43,6 +48,9 @@ public class Configration {
 
     @Value("${redis.port}")
     private int redisPort;
+
+    @Value("${elastic_search.url}")
+    private String elasticSearchURL;
 
     @Bean
     public DataSource dataSource() {
@@ -85,4 +93,15 @@ public class Configration {
     public MessagePublisher messagePublisher() {
         return new RedisMessagePublisher(redisTemplate());
     }
+
+    @Bean
+    public JestClient jestClient(){
+        JestClientFactory factory = new JestClientFactory();
+        factory.setHttpClientConfig(new HttpClientConfig
+                .Builder(elasticSearchURL)
+                .multiThreaded(true)
+                .build());
+        return factory.getObject();
+    }
+
 }

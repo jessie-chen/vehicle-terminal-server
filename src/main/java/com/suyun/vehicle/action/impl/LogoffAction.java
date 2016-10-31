@@ -26,14 +26,7 @@ public class LogoffAction extends BaseAction {
 
     @Override
     public Message handle(Message in) {
-        // 业务处理
-        int result;
-        BusInfo busInfo = service.getBusInfoByPhoneNo(in.checkcode().toHexString());
-        if (null != busInfo){
-            result = SUCCESS;
-        } else {
-            result = FAILURE;
-        }
+        int result = service.logoff(in.header().mobile().toHexString());
         return commonResponse(in, result);
     }
 }
