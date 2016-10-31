@@ -93,4 +93,6 @@ public interface BusInfoMapper {
      * @mbg.generated Tue Oct 18 18:14:27 CST 2016
      */
     int updateByPrimaryKey(BusInfo record);
+
+    BusInfo getByPhoneNo(String mobile);
 }

@@ -9,10 +9,13 @@ import com.suyun.vehicle.gen.model.BusInfoCriteria;
 import com.suyun.vehicle.protocol.body.PositionBody;
 import com.suyun.vehicle.protocol.body.TerminalRegister;
 import com.suyun.vehicle.utils.IdGenerator;
+import com.suyun.vehicle.utils.TimeUtil;
 import com.suyun.vehicle.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +56,8 @@ public class VehicleService {
     }
 
     public boolean saveCarRegisterInfo(String mobile, TerminalRegister register) {
+        mobile = mobile.replaceAll("^(0+)","");
         BusInfo busInfo = new BusInfo();
-        System.out.println("131131131 >" + (register.getProvinceId().toHexString() + register.getCityId().toHexString()));
         busInfo.setArea_code(register.getProvinceId().toHexString() + register.getCityId().toHexString());
         busInfo.setManufacturer_id(Long.valueOf(register.getManufacturerId().toHexString()));
         busInfo.setTerminal_model(register.getModel().toHexString());
@@ -82,27 +85,30 @@ public class VehicleService {
     }
 
     public BusInfo getBusInfoByPhoneNo(String mobile) {
-        BusInfoCriteria criteria = new BusInfoCriteria();
-        criteria.createCriteria().andMobileEqualTo(mobile);
-        return busInfoMapper.selectByExample(criteria).get(0);
+        return busInfoMapper.getByPhoneNo(mobile);
     }
 
-    public boolean saveLocationData(PositionBody locationData, String phoneNumber) {
+    public boolean saveLocationData(PositionBody locationData, String phoneNumber) throws ParseException {
+        phoneNumber = phoneNumber.replaceAll("^(0+)","");
         BusData data = new BusData();
+        BusInfo businfo = getBusInfoByPhoneNo(phoneNumber);
+        if (null != businfo) {
+            data.setBus_id(getBusInfoByPhoneNo(phoneNumber).getId());
+        } else {
+            return false;
+        }
         data.setAlert_flag(Integer.parseInt(locationData.getAlarmMark().toHexString()));
         data.setId(IdGenerator.uuid());
         data.setCreate_date(new Date());
         data.setAltitude(Integer.parseInt(locationData.getAltitude().toHexString()));
-        data.setLatitude(Double.parseDouble(locationData.getLatitude().toHexString()));
-        //data.setDatetime(locationData.getTime());
-        if (null != getBusInfoByPhoneNo(phoneNumber)) {
-            data.setBus_id(getBusInfoByPhoneNo(phoneNumber).getId());
-        }
+        data.setDatetime(TimeUtil.BCD6ToDate(locationData.getTime()));
+        data.setLatitude(new BigDecimal(locationData.getLatitude().intValue()).doubleValue());
         data.setSpeed(Integer.parseInt(locationData.getSpeed().toHexString()));
         data.setDirection(Integer.parseInt(locationData.getDirection().toHexString()));
-        data.setLongitude(Double.parseDouble(locationData.getLongitude().toHexString()));
+        data.setLongitude(new BigDecimal(locationData.getLongitude().intValue()).doubleValue());
         data.setStatus(Integer.parseInt(locationData.getStatus().toHexString()));
-        //unit
+        data.setLatitude_unit(locationData.getLatitude_unit() == 0);
+        data.setLongitude_unit(locationData.getLongtitude_unit() == 0);
         return busDataMapper.insertSelective(data) > 0;
     }
 

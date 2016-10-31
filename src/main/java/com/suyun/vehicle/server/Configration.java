@@ -35,7 +35,7 @@ public class Configration {
     @Value("${jdbc.password}")
     private String jdbcPassword;
 
-    @Value("${elasticSearchURL}")
+    @Value("${elastic_search.url}")
     private String elasticSearchURL;
 
     @Bean
