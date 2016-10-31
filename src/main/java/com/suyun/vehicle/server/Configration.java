@@ -1,5 +1,7 @@
 package com.suyun.vehicle.server;
 
+import com.suyun.vehicle.common.queue.MessagePublisher;
+import com.suyun.vehicle.common.queue.RedisMessagePublisher;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -8,11 +10,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
 /**
+ * Configuration
+ *
  * Created by IT on 16/10/12.
  */
 @org.springframework.context.annotation.Configuration
@@ -31,6 +37,12 @@ public class Configration {
 
     @Value("${jdbc.password}")
     private String jdbcPassword;
+
+    @Value("${redis.host}")
+    private String redisHost;
+
+    @Value("${redis.port}")
+    private int redisPort;
 
     @Bean
     public DataSource dataSource() {
@@ -52,4 +64,25 @@ public class Configration {
         return factoryBean.getObject();
     }
 
+
+    @Bean
+    public JedisConnectionFactory jedisConnectionFactory() {
+        JedisConnectionFactory factory = new JedisConnectionFactory();
+        factory.setHostName(redisHost);
+        factory.setPort(redisPort);
+        factory.setUsePool(true);
+        return factory;
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(jedisConnectionFactory());
+        return template;
+    }
+
+    @Bean
+    public MessagePublisher messagePublisher() {
+        return new RedisMessagePublisher(redisTemplate());
+    }
 }
