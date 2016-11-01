@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
  */
 public class TerminalClient {
 
-    private String host = "127.0.0.1";
+    private String host = "120.25.145.61";
     private int port;
 
     public TerminalClient(int port) {
@@ -26,7 +26,7 @@ public class TerminalClient {
     }
 
     public static void main(String[] args) throws Exception {
-        new TerminalClient(8001).run();
+        new TerminalClient(8000).run();
     }
 
     private void run() throws Exception {
