@@ -129,8 +129,7 @@
 
     </dependencies>
 
-
-
+    <!-- 佛山先注掉
     <repositories>
         <repository>
             <id>nexus</id>
@@ -158,6 +157,7 @@
             <url>${nexus.path}/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+    -->
 
     <build>
         <plugins>
@@ -169,6 +169,20 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <excludes>
+                        <exclude>*.properties</exclude>
+                        <exclude>**/*.xml</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- TODO :: install/deploy时, 为什么这个插件要跑? why? 如何去掉? -->
+            <!--
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
@@ -182,8 +196,10 @@
                     </execution>
                 </executions>
             </plugin>
-
+            -->
         </plugins>
+
+
     </build>
 
 </project>

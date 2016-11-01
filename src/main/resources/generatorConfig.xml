@@ -5,9 +5,9 @@
 
 <generatorConfiguration>
     <properties resource="generator.properties"></properties>
-    <classPathEntry location="C:/USERS/liam/.m2/repository/mysql/mysql-connector-java/5.1.30/mysql-connector-java-5.1.30.jar" />
-
-  <context id="default" targetRuntime="MyBatis3">
+    <!-- TODO:: 这里的classpath有够恶心啊... "~"还不认 -->
+    <classPathEntry location="~/.m2/repository/mysql/mysql-connector-java/5.1.30/mysql-connector-java-5.1.30.jar" />
+    <context id="default" targetRuntime="MyBatis3">
 
     <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
         <property name="searchString" value="Example$" />
