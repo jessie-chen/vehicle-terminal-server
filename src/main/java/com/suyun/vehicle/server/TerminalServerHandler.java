@@ -51,8 +51,9 @@ public class TerminalServerHandler extends SimpleChannelInboundHandler<Message> 
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
-        System.out.println(msg);
-        System.out.println(msg.toHexString());
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("R:"+msg.toHexString());
+        }
 
         int code = msg.header().id().intValue();
 

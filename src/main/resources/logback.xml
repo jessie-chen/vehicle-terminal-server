@@ -10,14 +10,34 @@
         </encoder>
     </appender>
 
+    <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/FILE-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %thread %X{invokeNo} %logger{40} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="canDataAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/can_raw_data-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %thread %X{invokeNo} %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="com.suyun.vehicle.service.VehicleCanService" level="INFO" additivity="false">
+        <appender-ref ref="canDataAppender" />
+    </logger>
     <logger name="com.lordofthejars.foo" level="INFO" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
-
     <!-- Strictly speaking, the level attribute is not necessary since -->
     <!-- the level of the root level is set to DEBUG by default.       -->
     <root level="INFO">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT"/>
     </root>
 
 </configuration>

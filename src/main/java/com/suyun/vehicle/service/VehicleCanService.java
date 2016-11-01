@@ -1,5 +1,6 @@
 package com.suyun.vehicle.service;
 
+import com.suyun.vehicle.action.impl.RegisterAction;
 import com.suyun.vehicle.gen.model.CanRawData;
 import com.suyun.vehicle.protocol.Body;
 import com.suyun.vehicle.protocol.body.CANPassthrough;
@@ -7,17 +8,20 @@ import com.suyun.vehicle.protocol.body.CanBusBatch;
 import com.suyun.vehicle.protocol.body.CanBusBody;
 import com.suyun.vehicle.utils.TimeUtil;
 import io.searchbox.client.JestClient;
+import io.searchbox.core.Bulk;
 import io.searchbox.core.Index;
 import io.searchbox.params.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * save can data as logger
@@ -27,13 +31,21 @@ import java.util.Optional;
 public class VehicleCanService {
     @Autowired
     private JestClient client;
+    private static final Logger LOGGER = LoggerFactory.getLogger(VehicleCanService.class);
 
-    public boolean saveDataToLogger(Object obj) throws IOException {
-        if (null != obj) {
-            Index index = new Index.Builder(obj)
-                    .index("can_data").type("can_raw_data")
-                    .setParameter(Parameters.REFRESH, true).build();
-            client.execute(index);
+    public boolean saveDataToLogger(List<CanRawData> rawDataList) throws IOException {
+        // log
+        for (CanRawData rawData : rawDataList){
+            LOGGER.info(rawData.getDate().getTime()+ "|"+rawData.getBus_id() + "|"+rawData.getCan_id()+ "|"+rawData.getValue());
+        }
+        List collectAsIndexBuilder = new ArrayList();
+        if (rawDataList.size() > 0) {
+            collectAsIndexBuilder.addAll(rawDataList.stream().map(rawData -> new Index.Builder(rawData).build()).collect(Collectors.toList()));
+            Bulk bulk = new Bulk.Builder()
+                    .defaultIndex("can_data").defaultType("can_raw_data")
+                    .addAction(collectAsIndexBuilder)
+                        .setParameter(Parameters.REFRESH, true).build();
+            client.execute(bulk);
             return true;
         } else {
             return false;

@@ -9,7 +9,7 @@ import java.util.Date;
 public class TimeUtil {
     public static Date BCDToDate(BCD time) throws ParseException {
         String strTime = time.toHexString().replace("0x", "");
-        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH-mm-ss SSSS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssSSSS");
         return sdf.parse(strTime);
     }
 
