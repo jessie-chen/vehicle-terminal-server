@@ -1,5 +1,6 @@
 package com.suyun.vehicle.action.impl;
 
+import com.suyun.vehicle.action.ActionFactory;
 import com.suyun.vehicle.action.BaseAction;
 import com.suyun.vehicle.common.queue.MessagePublisher;
 import com.suyun.vehicle.common.queue.Topic;
@@ -12,6 +13,8 @@ import com.suyun.vehicle.service.VehicleService;
 import com.suyun.vehicle.utils.MobileUtil;
 import com.suyun.vehicle.utils.TokenUtil;
 import jdk.nashorn.internal.ir.Terminal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AuthenticationAction extends BaseAction {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationAction.class);
     @Override
     public int actionCode() {
         return MessageCode.T_REQ_AUTHENTICATION;
@@ -38,13 +42,10 @@ public class AuthenticationAction extends BaseAction {
     public Message handle(Message in) throws Exception {
         String headMobile = in.header().mobile().toHexString();
         String authCode = ((TerminalAuthentication) in.body()).getAuthenticationCodeSrc();
-
-//        System.out.println("it should be >>"+ authCode);
-
-//        publisher.publish(Topic.DEFAULT_TOPIC, "1234");
-
+//      publisher.publish(Topic.DEFAULT_TOPIC, "1234");
         headMobile = MobileUtil.transferMobile(headMobile);
         int result = service.validAuthenticationCode(authCode,headMobile);
+        LOGGER.info("vehicle.authentication.action","valid auth code result : "+ result);
         return commonResponse(in, result);
     }
 }

@@ -5,6 +5,8 @@ import com.suyun.vehicle.protocol.Header;
 import com.suyun.vehicle.protocol.Message;
 import com.suyun.vehicle.protocol.MessageBuilder;
 import com.suyun.vehicle.protocol.body.ServerCommonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,7 +23,6 @@ public abstract class BaseAction implements Action {
     public final static int NOT_SUPPORT = 3;
     public final static int ALARM = 3;
     private static int seqNum = 0;
-
     protected Message commonResponse(Message in, int result) {
         Header header = in.header();
         String mobile = header.mobile().toHexString();

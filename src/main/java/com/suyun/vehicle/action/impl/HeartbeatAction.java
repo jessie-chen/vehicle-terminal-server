@@ -20,6 +20,7 @@ public class HeartbeatAction extends BaseAction {
 
     @Override
     public Message handle(Message in) {
+
         int result = SUCCESS;
         return commonResponse(in, result);
     }
