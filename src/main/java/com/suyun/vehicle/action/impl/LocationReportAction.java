@@ -25,6 +25,7 @@ public class LocationReportAction extends BaseAction {
         if (service.saveLocationData(body,in.header().mobile().toHexString())){
             result = SUCCESS;
         } else {
+
             result = FAILURE;
         }
         return commonResponse(in, result);

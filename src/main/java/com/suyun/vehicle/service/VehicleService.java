@@ -1,5 +1,6 @@
 package com.suyun.vehicle.service;
 
+import com.suyun.vehicle.action.ActionFactory;
 import com.suyun.vehicle.action.BaseAction;
 import com.suyun.vehicle.gen.dao.BusDataMapper;
 import com.suyun.vehicle.gen.dao.BusInfoMapper;
@@ -9,8 +10,11 @@ import com.suyun.vehicle.gen.model.BusInfoCriteria;
 import com.suyun.vehicle.protocol.body.PositionBody;
 import com.suyun.vehicle.protocol.body.TerminalRegister;
 import com.suyun.vehicle.utils.IdGenerator;
+import com.suyun.vehicle.utils.MobileUtil;
 import com.suyun.vehicle.utils.TimeUtil;
 import com.suyun.vehicle.utils.TokenUtil;
+import org.codehaus.plexus.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +33,8 @@ public class VehicleService {
     @Autowired
     private TokenUtil tokenUtil;
 
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(VehicleService.class);
+
     /*register*/
     public boolean validIsRegisted(String mobile) {
         BusInfoCriteria busInfo = new BusInfoCriteria();
@@ -41,14 +47,16 @@ public class VehicleService {
         boolean validResult = validIsRegisted(mobileNumber);
         String token;
         int result;
-        if (!validResult) {  //// TODO: 车辆与终端唯一标识（VIN）
+        if (!validResult) {
             saveCarRegisterInfo(mobileNumber, register);
             updateDataActiveStatus(mobileNumber, true);
             result = BaseAction.SUCCESS;
             token = tokenUtil.generateToken(mobileNumber);
+            LOGGER.info("vehicle.register.service","register success, generator token : >> "+token);
         } else {
             result = BaseAction.FAILURE; //车辆已被注册
             token = "";
+            LOGGER.info("vehicle.register.service","this car already exists : >> "+mobileNumber);
         }
         resultMap.put("result", result);
         resultMap.put("token", token);
@@ -95,6 +103,7 @@ public class VehicleService {
         if (null != businfo) {
             data.setBus_id(getBusInfoByPhoneNo(phoneNumber).getId());
         } else {
+            LOGGER.info("vehicle.location_report.service","bus_info not found with :"+phoneNumber);
             return false;
         }
         data.setAlert_flag(Integer.parseInt(locationData.getAlarmMark().toHexString()));
@@ -118,6 +127,7 @@ public class VehicleService {
             if (authCode.equals(headMobile)) {
                 return BaseAction.SUCCESS;
             } else {
+                LOGGER.info("vehicle.authentication.service","token code not match");
                 return BaseAction.FAILURE;
             }
         } else {
@@ -129,6 +139,7 @@ public class VehicleService {
         if (null == getBusInfoByPhoneNo(mobile)) {
             return BaseAction.FAILURE;
         } else {
+            LOGGER.info("vehicle.logoff.service","successful logoff");
             return BaseAction.SUCCESS;
         }
     }

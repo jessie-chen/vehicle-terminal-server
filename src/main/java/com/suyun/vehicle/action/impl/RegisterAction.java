@@ -10,6 +10,8 @@ import com.suyun.vehicle.protocol.utils.HexConverter;
 import com.suyun.vehicle.service.VehicleService;
 import com.suyun.vehicle.utils.MobileUtil;
 import com.suyun.vehicle.utils.TokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,7 @@ public class RegisterAction extends BaseAction {
 
     @Autowired
     private VehicleService vehicleService;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegisterAction.class);
     @Autowired
     private TokenUtil tokenUtil;
 
@@ -49,9 +51,8 @@ public class RegisterAction extends BaseAction {
         int result = (int) resultMap.get("result");
         String token = (String) resultMap.get("token");
         Body body = new TerminalRegisterResponse(reqSeq,result,token);
-        System.out.println();
         if (token != "") {
-            System.out.println("token :>>" + token);
+            LOGGER.info("vehicle.register.action","success,return response");
             return response(in, body);
         } else {
             return commonResponse(in,result);
