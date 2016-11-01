@@ -52,9 +52,10 @@ public class RegisterAction extends BaseAction {
         String token = (String) resultMap.get("token");
         Body body = new TerminalRegisterResponse(reqSeq,result,token);
         if (token != "") {
-            LOGGER.info("vehicle.register.action","success,return response");
+            LOGGER.info("vehicle.register.action","success,return generated token:"+ token);
             return response(in, body);
         } else {
+            LOGGER.info("vehicle.register.action","valid register failed. return common Response");
             return commonResponse(in,result);
         }
     }
