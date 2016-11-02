@@ -45,7 +45,7 @@ public class AuthenticationAction extends BaseAction {
 //      publisher.publish(Topic.DEFAULT_TOPIC, "1234");
         headMobile = MobileUtil.transferMobile(headMobile);
         int result = service.validAuthenticationCode(authCode,headMobile);
-        LOGGER.info("vehicle.authentication.action","valid auth code result : "+ result);
+        LOGGER.info("vehicle.authentication.action >> "+"valid auth code result : "+ result);
         return commonResponse(in, result);
     }
 }

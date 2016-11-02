@@ -34,7 +34,7 @@ public class CanBusAction extends BaseAction {
         String mobile = MobileUtil.transferMobile(in.header().mobile().toHexString());
         List<CanRawData> rawDataList = service.parseBodyToCanRowData(in.body(),VehicleCanService.CAN_BUS_DATA,mobile);
         result = service.saveDataToLogger(rawDataList) ? SUCCESS : FAILURE;
-        LOGGER.info("vehicle.save_0c20_can_data.action","save data to es search result : "+ result);
+        LOGGER.info("vehicle.save_0c20_can_data.action >> save data to es search result : "+ result);
         return commonResponse(in,result);
     }
 }

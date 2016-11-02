@@ -22,10 +22,10 @@ public class LocationReportAction extends BaseAction {
     public Message handle(Message in) throws Exception {
         int result;
         PositionBody body = (PositionBody) in.body();
-        if (service.saveLocationData(body,in.header().mobile().toHexString())){
+        boolean save_result = service.saveLocationData(body,in.header().mobile().toHexString());
+        if (save_result){
             result = SUCCESS;
         } else {
-
             result = FAILURE;
         }
         return commonResponse(in, result);

@@ -35,14 +35,14 @@ public class PassthroughAction extends BaseAction {
         switch (messageBody.getMessageType()) {
             case 0x01:
                 result = service.saveDataToLogger(rawDataList) ? SUCCESS :FAILURE;
-                LOGGER.info("vehicle.can_passthrough_data.action","save data result: >>"+result);
+                LOGGER.info("vehicle.can_passthrough_data.action >> save data result: >>"+result);
                 return commonResponse(in, result);
             case 0x81:
-                LOGGER.info("vehicle.can_passthrough_data.action","message type 0x81 dose not supported");
+                LOGGER.info("vehicle.can_passthrough_data.action >> message type 0x81 dose not supported");
                 result = FAULT;
                 return commonResponse(in, result);
             default:
-                LOGGER.info("vehicle.can_passthrough_data.action","message type doesn't exists");
+                LOGGER.info("vehicle.can_passthrough_data.action >> message type doesn't exists");
                 return commonResponse(in, result);
         }
     }
