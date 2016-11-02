@@ -36,7 +36,7 @@ public class VehicleService {
         BusInfo busInfo = getBusInfoByPhoneNo(mobileNumber);
         String token;
         int result;
-        if (busInfo.getIs_active() == null) {
+        if (busInfo.getIs_active() == null || !busInfo.getIs_active()) {
             saveCarRegisterInfo(mobileNumber, register); //未注册
             result = BaseAction.SUCCESS;
             token = tokenUtil.generateToken(Generator.auth_code());
