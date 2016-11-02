@@ -21,7 +21,7 @@ public class Commands {
         String hexString;
         switch (command) {
             case "register":
-                hexString = "7E0100002C0134123456782C8C000000000000000000534C363638302D474200000000000000000000003136443232333400313644323233348F7E";
+                hexString = "7E0100002C0646205194820CE2000000000000000000484C363631000000000000000000000000000000363647303034340036364730303434D17E";
                 break;
             case "authentication":
                 hexString = auth();
