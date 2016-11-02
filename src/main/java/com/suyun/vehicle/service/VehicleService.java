@@ -49,7 +49,6 @@ public class VehicleService {
         int result;
         if (!validResult) {
             saveCarRegisterInfo(mobileNumber, register);
-            updateDataActiveStatus(mobileNumber, true);
             result = BaseAction.SUCCESS;
             token = tokenUtil.generateToken(mobileNumber);
             LOGGER.info("vehicle.register.service >> register success, generator token : >> "+token);
@@ -75,6 +74,7 @@ public class VehicleService {
         busInfo.setId(IdGenerator.uuid());
         busInfo.setCreate_by(register.getTerminalId().toHexString());
         busInfo.setCreate_date(new Date());
+        busInfo.setIs_active(true);
         if (plateColor.charAt(plateColor.length() - 1) == '0') {
             busInfo.setPlate_no(register.getPlateIdentify());
         } else {
