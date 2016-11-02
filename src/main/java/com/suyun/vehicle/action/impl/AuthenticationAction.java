@@ -44,7 +44,7 @@ public class AuthenticationAction extends BaseAction {
         String authCode = ((TerminalAuthentication) in.body()).getAuthenticationCodeSrc();
         headMobile = MobileUtil.transferMobile(headMobile);
         int result = service.validAuthenticationCode(authCode,headMobile);
-        LOGGER.info("vehicle.authentication.action","valid auth code result : "+ result);
+        LOGGER.info("vehicle.authentication.action >> "+"valid auth code result : "+ result);
         return commonResponse(in, result);
     }
 }

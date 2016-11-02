@@ -36,7 +36,7 @@ public class CanBusBatchAction extends BaseAction{
         String mobile = MobileUtil.transferMobile(in.header().mobile().toHexString());
         List<CanRawData> rawDataList = service.parseBodyToCanRowData(in.body(),VehicleCanService.CAN_BUS_BATCH_DATA,mobile);
         int result = service.saveDataToLogger(rawDataList) ? SUCCESS : FAILURE;
-        LOGGER.info("vehicle.save_0c21_can_data.action","save data to elastic search result : "+ result);
+        LOGGER.info("vehicle.save_0c21_can_data.action >> save data to elastic search result : "+ result);
         return commonResponse(in,result);
     }
 }

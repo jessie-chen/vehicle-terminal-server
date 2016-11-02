@@ -49,14 +49,13 @@ public class VehicleService {
         int result;
         if (!validResult) {
             saveCarRegisterInfo(mobileNumber, register);
-            updateDataActiveStatus(mobileNumber, true);
             result = BaseAction.SUCCESS;
             token = tokenUtil.generateToken(mobileNumber);
-            LOGGER.info("vehicle.register.service","register success, generator token : >> "+token);
+            LOGGER.info("vehicle.register.service >> register success, generator token : >> "+token);
         } else {
             result = BaseAction.FAILURE; //车辆已被注册
             token = "";
-            LOGGER.info("vehicle.register.service","this car already exists : >> "+mobileNumber);
+            LOGGER.info("vehicle.register.service >> this car already exists : >> "+mobileNumber);
         }
         resultMap.put("result", result);
         resultMap.put("token", token);
@@ -75,6 +74,7 @@ public class VehicleService {
         busInfo.setId(IdGenerator.uuid());
         busInfo.setCreate_by(register.getTerminalId().toHexString());
         busInfo.setCreate_date(new Date());
+        busInfo.setIs_active(true);
         if (plateColor.charAt(plateColor.length() - 1) == '0') {
             busInfo.setPlate_no(register.getPlateIdentify());
         } else {
@@ -103,7 +103,7 @@ public class VehicleService {
         if (null != businfo) {
             data.setBus_id(getBusInfoByPhoneNo(phoneNumber).getId());
         } else {
-            LOGGER.info("vehicle.location_report.service","bus_info not found with :"+phoneNumber);
+            LOGGER.info("vehicle.location_report.service >> bus_info not found with :"+phoneNumber);
             return false;
         }
         data.setAlert_flag(Integer.parseInt(locationData.getAlarmMark().toHexString()));
@@ -127,7 +127,7 @@ public class VehicleService {
             if (authCode.equals(headMobile)) {
                 return BaseAction.SUCCESS;
             } else {
-                LOGGER.info("vehicle.authentication.service","token code not match");
+                LOGGER.info("vehicle.authentication.service >> token code not match");
                 return BaseAction.FAILURE;
             }
         } else {
@@ -139,7 +139,7 @@ public class VehicleService {
         if (null == getBusInfoByPhoneNo(mobile)) {
             return BaseAction.FAILURE;
         } else {
-            LOGGER.info("vehicle.logoff.service","successful logoff");
+            LOGGER.info("vehicle.logoff.service >> successful logoff");
             return BaseAction.SUCCESS;
         }
     }
