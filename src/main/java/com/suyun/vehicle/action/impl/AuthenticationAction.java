@@ -3,6 +3,7 @@ package com.suyun.vehicle.action.impl;
 import com.suyun.vehicle.action.ActionFactory;
 import com.suyun.vehicle.action.BaseAction;
 import com.suyun.vehicle.common.queue.MessagePublisher;
+import com.suyun.vehicle.common.queue.MessageTypes;
 import com.suyun.vehicle.common.queue.Topic;
 import com.suyun.vehicle.gen.model.BusInfo;
 import com.suyun.vehicle.protocol.Body;
@@ -37,12 +38,10 @@ public class AuthenticationAction extends BaseAction {
 //    @Autowired
 //    private MessagePublisher publisher;
 
-
     @Override
     public Message handle(Message in) throws Exception {
         String headMobile = in.header().mobile().toHexString();
         String authCode = ((TerminalAuthentication) in.body()).getAuthenticationCodeSrc();
-//      publisher.publish(Topic.DEFAULT_TOPIC, "1234");
         headMobile = MobileUtil.transferMobile(headMobile);
         int result = service.validAuthenticationCode(authCode,headMobile);
         LOGGER.info("vehicle.authentication.action","valid auth code result : "+ result);

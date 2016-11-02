@@ -28,7 +28,7 @@ public class TokenUtil {
         if(DigestUtil.sign(src, secret).equals(s[1])) { // valid
             return src;
         } else { // invalid
-            return null;
+            return "";
         }
     }
 }
