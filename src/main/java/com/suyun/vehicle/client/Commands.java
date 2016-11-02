@@ -24,8 +24,8 @@ public class Commands {
                 hexString = "7E0100002C0646205194820CE2000000000000000000484C363631000000000000000000000000000000363647303034340036364730303434D17E";
                 break;
             case "authentication":
-                hexString = auth();
-                //hexString = "7E010200030134123456782C8E313234A87E";
+//                hexString = auth();
+                hexString = "7E0102002006462051948216104E6A51324D6A41314D546B304F44493D2E6C465330616F5167386E6645507771537E";
                 break;
             case "heartbeat":
                 hexString = "7E000200000134123456782C8F9C7E";

@@ -1,6 +1,5 @@
 package com.suyun.vehicle.service;
 
-import com.suyun.vehicle.action.ActionFactory;
 import com.suyun.vehicle.action.BaseAction;
 import com.suyun.vehicle.gen.dao.BusDataMapper;
 import com.suyun.vehicle.gen.dao.BusInfoMapper;
@@ -9,11 +8,9 @@ import com.suyun.vehicle.gen.model.BusInfo;
 import com.suyun.vehicle.gen.model.BusInfoCriteria;
 import com.suyun.vehicle.protocol.body.PositionBody;
 import com.suyun.vehicle.protocol.body.TerminalRegister;
-import com.suyun.vehicle.utils.IdGenerator;
-import com.suyun.vehicle.utils.MobileUtil;
+import com.suyun.vehicle.utils.Generator;
 import com.suyun.vehicle.utils.TimeUtil;
 import com.suyun.vehicle.utils.TokenUtil;
-import org.codehaus.plexus.logging.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,14 +23,13 @@ import java.util.Map;
 
 @Service
 public class VehicleService {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(VehicleService.class);
     @Autowired
     private BusInfoMapper busInfoMapper;
     @Autowired
     private BusDataMapper busDataMapper;
     @Autowired
     private TokenUtil tokenUtil;
-
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(VehicleService.class);
 
     public Map<String, Object> register(String mobileNumber, TerminalRegister register) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
@@ -43,13 +39,13 @@ public class VehicleService {
         if (busInfo.getIs_active() == null) {
             saveCarRegisterInfo(mobileNumber, register); //未注册
             result = BaseAction.SUCCESS;
-            token = tokenUtil.generateToken(mobileNumber);
+            token = tokenUtil.generateToken(Generator.auth_code());
             LOGGER.info("vehicle.register.service >> register success, generator token : >> " + token);
-        } else if (busInfo.getIs_active()){
+        } else if (busInfo.getIs_active()) {
             result = BaseAction.FAILURE; //车辆已经注册
             token = "";
-            LOGGER.info("vehicle.register.service >> this car already exists : >> "+mobileNumber);
-       } else {
+            LOGGER.info("vehicle.register.service >> this car already exists : >> " + mobileNumber);
+        } else {
             result = BaseAction.FAULT;
             token = "";
         }
@@ -59,7 +55,7 @@ public class VehicleService {
     }
 
     public boolean saveCarRegisterInfo(String mobile, TerminalRegister register) {
-        mobile = mobile.replaceAll("^(0+)","");
+        mobile = mobile.replaceAll("^(0+)", "");
         BusInfo busInfo = getBusInfoByPhoneNo(mobile);
         busInfo.setArea_code(register.getProvinceId().toHexString() + register.getCityId().toHexString());
         busInfo.setManufacturer_id(Long.valueOf(register.getManufacturerId().toHexString()));
@@ -89,17 +85,17 @@ public class VehicleService {
     }
 
     public boolean saveLocationData(PositionBody locationData, String phoneNumber) throws ParseException {
-        phoneNumber = phoneNumber.replaceAll("^(0+)","");
+        phoneNumber = phoneNumber.replaceAll("^(0+)", "");
         BusData data = new BusData();
         BusInfo businfo = getBusInfoByPhoneNo(phoneNumber);
         if (null != businfo) {
             data.setBus_id(businfo.getId());
         } else {
-            LOGGER.info("vehicle.location_report.service >> bus_info not found with :"+phoneNumber);
+            LOGGER.info("vehicle.location_report.service >> bus_info not found with :" + phoneNumber);
             return false;
         }
         data.setAlert_flag(Integer.parseInt(locationData.getAlarmMark().toHexString()));
-        data.setId(IdGenerator.uuid());
+        data.setId(Generator.uuid());
         data.setCreate_date(new Date());
         data.setAltitude(Integer.parseInt(locationData.getAltitude().toHexString()));
         data.setDatetime(TimeUtil.BCD6ToDate(locationData.getTime()));
@@ -115,8 +111,8 @@ public class VehicleService {
 
     public int validAuthenticationCode(String authCode, String headMobile) throws Exception {
         if (null != authCode) {
-            authCode = tokenUtil.extractToken(authCode);
-            if (authCode.equals(headMobile)) {
+            boolean result  = tokenUtil.verifyToken(authCode,headMobile);
+            if (result) {
                 return BaseAction.SUCCESS;
             } else {
                 LOGGER.info("vehicle.authentication.service >> token code not match");
@@ -128,11 +124,13 @@ public class VehicleService {
     }
 
     public int logoff(String mobile) {
-        if (null == getBusInfoByPhoneNo(mobile)) {
-            return BaseAction.FAILURE;
-        } else {
+        boolean result = updateDataActiveStatus(mobile, false);
+        if (result) {
             LOGGER.info("vehicle.logoff.service >> successful logoff");
             return BaseAction.SUCCESS;
+        } else {
+            LOGGER.info("vehicle.logoff.service >> update is_active state failed");
+            return BaseAction.FAILURE;
         }
     }
 }

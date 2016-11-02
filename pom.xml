@@ -182,7 +182,7 @@
             </plugin>
 
             <!-- TODO :: install/deploy时, 为什么这个插件要跑? why? 如何去掉? -->
-            <!--
+
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
@@ -196,7 +196,6 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
         </plugins>
 
 
