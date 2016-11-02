@@ -39,7 +39,7 @@ public class VehicleService {
         if (busInfo.getIs_active() == null || !busInfo.getIs_active()) {
             saveCarRegisterInfo(mobileNumber, register); //未注册
             result = BaseAction.SUCCESS;
-            token = tokenUtil.generateToken(Generator.auth_code());
+            token = tokenUtil.generateToken(mobileNumber);
             LOGGER.info("vehicle.register.service >> register success, generator token : >> " + token);
         } else if (busInfo.getIs_active()) {
             result = BaseAction.FAILURE; //车辆已经注册
