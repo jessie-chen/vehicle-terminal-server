@@ -35,27 +35,23 @@ public class VehicleService {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(VehicleService.class);
 
-    /*register*/
-    public boolean validIsRegisted(String mobile) {
-        BusInfoCriteria busInfo = new BusInfoCriteria();
-        busInfo.createCriteria().andMobileEqualTo(mobile);
-        return busInfoMapper.selectByExample(busInfo).size() > 0;
-    }
-
     public Map<String, Object> register(String mobileNumber, TerminalRegister register) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        boolean validResult = validIsRegisted(mobileNumber);
+        BusInfo busInfo = getBusInfoByPhoneNo(mobileNumber);
         String token;
         int result;
-        if (!validResult) {
-            saveCarRegisterInfo(mobileNumber, register);
+        if (busInfo.getIs_active() == null) {
+            saveCarRegisterInfo(mobileNumber, register); //未注册
             result = BaseAction.SUCCESS;
             token = tokenUtil.generateToken(mobileNumber);
-            LOGGER.info("vehicle.register.service >> register success, generator token : >> "+token);
-        } else {
-            result = BaseAction.FAILURE; //车辆已被注册
+            LOGGER.info("vehicle.register.service >> register success, generator token : >> " + token);
+        } else if (busInfo.getIs_active()){
+            result = BaseAction.FAILURE; //车辆已经注册
             token = "";
             LOGGER.info("vehicle.register.service >> this car already exists : >> "+mobileNumber);
+       } else {
+            result = BaseAction.FAULT;
+            token = "";
         }
         resultMap.put("result", result);
         resultMap.put("token", token);
@@ -64,24 +60,20 @@ public class VehicleService {
 
     public boolean saveCarRegisterInfo(String mobile, TerminalRegister register) {
         mobile = mobile.replaceAll("^(0+)","");
-        BusInfo busInfo = new BusInfo();
+        BusInfo busInfo = getBusInfoByPhoneNo(mobile);
         busInfo.setArea_code(register.getProvinceId().toHexString() + register.getCityId().toHexString());
         busInfo.setManufacturer_id(Long.valueOf(register.getManufacturerId().toHexString()));
         busInfo.setTerminal_model(register.getModel().toHexString());
         busInfo.setTerminal_id(register.getTerminalId().toHexString());
         String plateColor = register.getPlateColor().toHexString();
         busInfo.setPlate_color(Integer.parseInt(plateColor));
-        busInfo.setId(IdGenerator.uuid());
-        busInfo.setCreate_by(register.getTerminalId().toHexString());
-        busInfo.setCreate_date(new Date());
         busInfo.setIs_active(true);
         if (plateColor.charAt(plateColor.length() - 1) == '0') {
             busInfo.setPlate_no(register.getPlateIdentify());
         } else {
             busInfo.setVIN(register.getPlateIdentify());
         }
-        busInfo.setMobile(mobile);
-        return busInfoMapper.insertSelective(busInfo) > 0;
+        return busInfoMapper.updateByPrimaryKeySelective(busInfo) > 0;
     }
 
     public boolean updateDataActiveStatus(String mobile, boolean status) {
@@ -101,7 +93,7 @@ public class VehicleService {
         BusData data = new BusData();
         BusInfo businfo = getBusInfoByPhoneNo(phoneNumber);
         if (null != businfo) {
-            data.setBus_id(getBusInfoByPhoneNo(phoneNumber).getId());
+            data.setBus_id(businfo.getId());
         } else {
             LOGGER.info("vehicle.location_report.service >> bus_info not found with :"+phoneNumber);
             return false;
