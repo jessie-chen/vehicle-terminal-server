@@ -6,3 +6,4 @@ classes
 *.class
 .DS_Store
 fabfile.py*
+logs

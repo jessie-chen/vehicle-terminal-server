@@ -16,6 +16,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -90,8 +91,13 @@ public class Configration {
     }
 
     @Bean
+    public ChannelTopic topic() {
+        return new ChannelTopic(MessagePublisher.DEFAULT_TOPIC);
+    }
+
+    @Bean
     public MessagePublisher messagePublisher() {
-        return new RedisMessagePublisher(redisTemplate());
+        return new RedisMessagePublisher(redisTemplate(), topic());
     }
 
     @Bean
