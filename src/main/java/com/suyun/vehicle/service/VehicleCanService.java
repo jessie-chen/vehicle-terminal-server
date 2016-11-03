@@ -6,6 +6,7 @@ import com.suyun.vehicle.protocol.Body;
 import com.suyun.vehicle.protocol.body.CANPassthrough;
 import com.suyun.vehicle.protocol.body.CanBusBatch;
 import com.suyun.vehicle.protocol.body.CanBusBody;
+import com.suyun.vehicle.protocol.body.PassthroughBody;
 import com.suyun.vehicle.utils.TimeUtil;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Bulk;
@@ -61,7 +62,7 @@ public class VehicleCanService {
 
     //analytic attach protocol
     public List<CanRawData> parseBodyToCanRowData(Body body, String type,String mobile) throws ParseException {
-        String busID = service.getBusInfoByPhoneNo(mobile).getId();
+        String busID = service.getBusInfoByPhoneNo(mobile).getId(); //// TODO: 解析can_raw_data 放到action
         CanRawData data = new CanRawData();
         List<CanRawData> rawDataList = new ArrayList<>();
         switch (type) {
@@ -88,12 +89,12 @@ public class VehicleCanService {
                 }
                 return rawDataList;
             case CAN_PASSTHROUGH_DATA:
-                CANPassthrough canData = (CANPassthrough) body;
+                CANPassthrough canData = (CANPassthrough) ((PassthroughBody) body).getBody();
                 for (CANPassthrough.CANPackage canPackage : canData.getPackages()) {
                     data.setCan_id(String.valueOf(canPackage.getCanId()));
                     data.setValue(canPackage.getCanData());
                     data.setBus_id(busID);
-                    data.setDate(TimeUtil.BCDToDate(canData.getDate()));
+                    data.setDate(TimeUtil.BCD6ToDate(canData.getDate()));
                     rawDataList.add(data);
                 }
                 return rawDataList;

@@ -30,10 +30,10 @@ public class PassthroughAction extends BaseAction {
     public Message handle(Message in) throws Exception {
         PassthroughBody messageBody = (PassthroughBody) in.body();
         String mobile = MobileUtil.transferMobile(in.header().mobile().toHexString());
-        List<CanRawData> rawDataList = service.parseBodyToCanRowData(in.body(),VehicleCanService.CAN_PASSTHROUGH_DATA,mobile);
         int result = 0;
         switch (messageBody.getMessageType()) {
             case 0x01:
+                List<CanRawData> rawDataList = service.parseBodyToCanRowData(in.body(),VehicleCanService.CAN_PASSTHROUGH_DATA,mobile);
                 result = service.saveDataToLogger(rawDataList) ? SUCCESS :FAILURE;
                 LOGGER.info("vehicle.can_passthrough_data.action >> save data result: >>"+result);
                 return commonResponse(in, result);
