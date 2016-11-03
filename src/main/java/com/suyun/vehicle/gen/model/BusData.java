@@ -91,7 +91,7 @@ public class BusData {
      *
      * @mbg.generated Wed Oct 19 17:07:53 CST 2016
      */
-    private Integer alert_flag;
+    private Long alert_flag;
 
     /**
      *
@@ -389,7 +389,7 @@ public class BusData {
      *
      * @mbg.generated Wed Oct 19 17:07:53 CST 2016
      */
-    public Integer getAlert_flag() {
+    public Long getAlert_flag() {
         return alert_flag;
     }
 
@@ -401,7 +401,7 @@ public class BusData {
      *
      * @mbg.generated Wed Oct 19 17:07:53 CST 2016
      */
-    public void setAlert_flag(Integer alert_flag) {
+    public void setAlert_flag(Long alert_flag) {
         this.alert_flag = alert_flag;
     }
 

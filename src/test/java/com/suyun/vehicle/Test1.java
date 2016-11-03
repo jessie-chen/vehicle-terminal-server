@@ -23,10 +23,6 @@ class Foo implements Runnable {
     }
 
     public static void main(String[] args) throws Exception {
-        Thread t = new Thread(new Foo());
-        t.start();
-        System.out.print("Start");
-        t.join();
-        System.out.print("Complete");
+        System.out.println(Math.pow(10,6));
     }
 }
