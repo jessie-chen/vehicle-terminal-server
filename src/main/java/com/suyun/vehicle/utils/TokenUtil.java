@@ -25,13 +25,13 @@ public class TokenUtil {
         TerminalAuthCriteria criteria = new TerminalAuthCriteria();
         criteria.createCriteria().andMobileEqualTo(mobile);
         List<TerminalAuth> resultList = mapper.selectByExample(criteria);
-        TerminalAuth ta = new TerminalAuth();
+        TerminalAuth ta;
         int result;
         if (resultList.size() > 0) {
             ta = resultList.get(0);
             ta.setToken(genNO);
             ta.setDate(new Date());
-            result = mapper.updateByPrimaryKey(ta);
+            result = mapper.updateByPrimaryKeySelective(ta);
             if (result > 0) {
                 LOGGER.info("TokenUtil >> TerminalAuthMapper > successful update record with mobile: " + mobile);
             } else {
@@ -39,6 +39,7 @@ public class TokenUtil {
             }
         } else {
             LOGGER.info("TokenUtil >> generator token : " + genNO);
+            ta = new TerminalAuth();
             ta.setId(Generator.uuid());
             ta.setMobile(mobile);
             ta.setToken(genNO);

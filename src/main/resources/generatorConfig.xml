@@ -6,7 +6,8 @@
 <generatorConfiguration>
     <properties resource="generator.properties"></properties>
     <!-- TODO:: 这里的classpath有够恶心啊... "~"还不认 -->
-    <classPathEntry location="C:/users/liam/.m2/repository/mysql/mysql-connector-java/5.1.30/mysql-connector-java-5.1.30.jar" />
+    <!-- C:/users/liam/.m2/repository/mysql/mysql-connector-java/5.1.30/mysql-connector-java-5.1.30.jar -->
+    <classPathEntry location="/Users/IT/.m2/repository/mysql/mysql-connector-java/5.1.30/mysql-connector-java-5.1.30.jar" />
     <context id="default" targetRuntime="MyBatis3">
 
     <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
@@ -40,7 +41,7 @@
 
     <table schema="${db.schema}" tableName="${db.table}" domainObjectName="${domain.name}" >
       <property name="useActualColumnNames" value="true"/>
-      <generatedKey column="ID" sqlStatement="DB2" identity="true" />
+      <!--<generatedKey column="ID" sqlStatement="MySql" identity="true" />-->
       <columnOverride column="DATE_FIELD" property="startDate" />
       <ignoreColumn column="FRED" />
       <columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR" />
