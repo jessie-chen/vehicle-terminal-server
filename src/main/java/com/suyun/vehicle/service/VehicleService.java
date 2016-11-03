@@ -94,16 +94,16 @@ public class VehicleService {
             LOGGER.info("vehicle.location_report.service >> bus_info not found with :" + phoneNumber);
             return false;
         }
-        data.setAlert_flag(Integer.parseInt(locationData.getAlarmMark().toHexString()));
+        data.setAlert_flag(locationData.getAlarmMark().intValue());
         data.setId(Generator.uuid());
         data.setCreate_date(new Date());
-        data.setAltitude(Integer.parseInt(locationData.getAltitude().toHexString()));
+        data.setAltitude(locationData.getAltitude().intValue());
         data.setDatetime(TimeUtil.BCD6ToDate(locationData.getTime()));
-        data.setLatitude(new BigDecimal(locationData.getLatitude().intValue()).doubleValue());
+        data.setLatitude(locationData.getLatitude().intValue() / Math.pow(10, 6));
         data.setSpeed(locationData.getSpeed().intValue());
         data.setDirection(locationData.getDirection().intValue());
-        data.setLongitude(new BigDecimal(locationData.getLongitude().intValue()).doubleValue());
-        data.setStatus(Integer.parseInt(locationData.getStatus().toHexString()));
+        data.setLongitude(locationData.getLongitude().intValue() / Math.pow(10, 6));
+        data.setStatus((int)locationData.getStatus().intValue());
         data.setLatitude_unit(locationData.getLatitude_unit() == 0);
         data.setLongitude_unit(locationData.getLongtitude_unit() == 0);
         return busDataMapper.insertSelective(data) > 0;
