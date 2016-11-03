@@ -43,7 +43,7 @@ public class TokenUtil {
             ta.setMobile(mobile);
             ta.setToken(genNO);
             ta.setDate(new Date());
-            result = mapper.insert(ta);
+            result = mapper.insertSelective(ta);
             if (result > 0) {
                 LOGGER.info("TokenUtil >> TerminalAuthMapper > successful insert record with mobile: " + mobile);
             } else {

@@ -39,7 +39,7 @@ public class VehicleService {
         if (busInfo.getIs_active() == null || !busInfo.getIs_active()) {
             saveCarRegisterInfo(mobileNumber, register); //未注册
             result = BaseAction.SUCCESS;
-            token = tokenUtil.generateToken(Generator.auth_code());
+            token = tokenUtil.generateToken(mobileNumber);
             LOGGER.info("vehicle.register.service >> register success, generator token : >> " + token);
         } else if (busInfo.getIs_active()) {
             result = BaseAction.FAILURE; //车辆已经注册
@@ -100,8 +100,8 @@ public class VehicleService {
         data.setAltitude(Integer.parseInt(locationData.getAltitude().toHexString()));
         data.setDatetime(TimeUtil.BCD6ToDate(locationData.getTime()));
         data.setLatitude(new BigDecimal(locationData.getLatitude().intValue()).doubleValue());
-        data.setSpeed(Integer.parseInt(locationData.getSpeed().toHexString()));
-        data.setDirection(Integer.parseInt(locationData.getDirection().toHexString()));
+        data.setSpeed(locationData.getSpeed().intValue());
+        data.setDirection(locationData.getDirection().intValue());
         data.setLongitude(new BigDecimal(locationData.getLongitude().intValue()).doubleValue());
         data.setStatus(Integer.parseInt(locationData.getStatus().toHexString()));
         data.setLatitude_unit(locationData.getLatitude_unit() == 0);
